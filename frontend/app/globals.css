@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background-color: #030712;
+  color: #f9fafb;
+  margin: 0;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111827;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #374151;
+  border-radius: 3px;
+}
+
+/* LiveKit overrides */
+.lk-room-container {
+  background: transparent !important;
+}
+
+.lk-video-conference {
+  height: 100% !important;
+  width: 100% !important;
+}
+
+.lk-participant-tile {
+  border-radius: 1rem !important;
+  overflow: hidden !important;
+  background-color: #111827 !important;
+}
+
+.lk-participant-tile video {
+  object-fit: cover !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Memperbaiki jarak antar grid livekit */
+.lk-grid-layout {
+  gap: 1rem !important;
+  padding: 1rem !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Memastikan tile mengisi penuh kotak grid-nya */
+.lk-participant-tile {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Sembunyikan control bar bawaan LiveKit agar tidak menumpuk dengan tombol kustom kita */
+.lk-control-bar {
+  display: none !important;
+}
