@@ -27,7 +27,7 @@ function SimpleGrid({ tracks }: { tracks: any[] }) {
     return (
         <div className={`grid ${gridCols} ${gridRows} gap-4 p-4 w-full h-full place-items-stretch`}>
             {tracks.map((t) => (
-                <div key={t.participant.identity + t.source} className="relative w-full h-full min-h-[150px] bg-gray-900/50 rounded-[1.5rem] overflow-hidden border border-gray-700/50 shadow-lg">
+                <div key={t.participant.identity + t.source} className="relative w-full h-full min-h-[150px] bg-gray-100 rounded-[1.5rem] overflow-hidden border border-gray-200 shadow-sm">
                     <ParticipantTile 
                         trackRef={t} 
                         className="absolute inset-0 w-full h-full" 
@@ -38,7 +38,7 @@ function SimpleGrid({ tracks }: { tracks: any[] }) {
     );
 }
 
-function MyVideoGrid({ partyCode }: { partyCode: string }) {
+function MyVideoGrid({ partyCode, isDrawing }: { partyCode: string, isDrawing?: boolean }) {
     const tracks = useTracks(
         [
             { source: Track.Source.Camera, withPlaceholder: true },
@@ -53,9 +53,9 @@ function MyVideoGrid({ partyCode }: { partyCode: string }) {
     const theirTracks = validTracks.filter(t => !t.participant.identity.startsWith(partyCode + '_'));
 
     return (
-        <div className="w-full h-full flex flex-col md:flex-row bg-gray-900/20">
+        <div className={`w-full h-full flex ${isDrawing ? 'flex-col' : 'flex-col md:flex-row'} bg-gray-50`}>
             {/* Area Kamera Kita (Kiri) */}
-            <div className={`flex-1 ${theirTracks.length > 0 ? 'border-b md:border-b-0 md:border-r border-gray-700/50' : ''}`}>
+            <div className={`flex-1 ${theirTracks.length > 0 ? (isDrawing ? 'border-b' : 'border-b md:border-b-0 md:border-r') + ' border-gray-200' : ''}`}>
                 <SimpleGrid tracks={ourTracks} />
             </div>
             
@@ -167,29 +167,25 @@ export default function PartyPage() {
     // ── Belum join (buka link langsung tanpa lewat home) ────
     if (!joined || !state.code) {
         return (
-            <main className="min-h-screen bg-[#030712] flex flex-col items-center justify-center p-4 relative overflow-hidden">
-                {/* Background glow */}
-                <div className="absolute top-[-20%] left-[50%] translate-x-[-50%] w-[600px] h-[600px] bg-purple-900/20 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute bottom-[-10%] left-[20%] w-[400px] h-[400px] bg-teal-900/10 rounded-full blur-3xl pointer-events-none" />
-
+            <main className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 relative overflow-hidden">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="w-full max-w-sm relative z-10 space-y-6"
                 >
                     <div className="text-center space-y-2">
-                        <h1 className="text-4xl font-extrabold text-white tracking-tight">
-                            Fun<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-teal-400">Frame</span>
+                        <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">
+                            Fun<span className="text-indigo-600">Frame</span>
                         </h1>
-                        <p className="text-gray-400 text-sm">Kamu diundang ke party!</p>
-                        <div className="inline-block mt-2 bg-purple-900/40 border border-purple-500/30 text-purple-300 font-mono tracking-[0.2em] px-4 py-1.5 rounded-full text-lg font-bold shadow-lg shadow-purple-900/20">
+                        <p className="text-gray-500 text-sm">Kamu diundang ke party!</p>
+                        <div className="inline-block mt-2 bg-white border border-gray-200 text-indigo-600 font-mono tracking-[0.2em] px-4 py-1.5 rounded-full text-lg font-bold shadow-sm">
                             {code}
                         </div>
                     </div>
 
-                    <div className="bg-gray-900/80 backdrop-blur-sm rounded-3xl p-6 space-y-4 border border-gray-800 shadow-2xl">
+                    <div className="bg-white rounded-3xl p-6 space-y-4 border border-gray-100 shadow-xl shadow-gray-200/50">
                         <div>
-                            <label className="text-xs text-gray-500 uppercase tracking-widest mb-2 block">Nama kamu</label>
+                            <label className="text-xs text-gray-500 uppercase tracking-widest mb-2 block font-semibold">Nama kamu</label>
                             <input
                                 type="text"
                                 placeholder="Masukkan nama..."
@@ -202,7 +198,7 @@ export default function PartyPage() {
                                         setJoined(true);
                                     }
                                 }}
-                                className="w-full bg-gray-800/80 text-white rounded-2xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-purple-500/50 placeholder-gray-600 transition border border-gray-700/50 focus:border-purple-500/50"
+                                className="w-full bg-gray-50 text-gray-900 rounded-2xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-indigo-500/50 placeholder-gray-400 transition border border-gray-200 focus:border-indigo-500/50 shadow-inner"
                             />
                         </div>
                         <button
@@ -212,7 +208,7 @@ export default function PartyPage() {
                                 joinParty(code, name.trim());
                                 setJoined(true);
                             }}
-                            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 active:scale-95 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-purple-900/30"
+                            className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-indigo-600/20"
                         >
                             <Users size={18} />
                             Gabung Party
@@ -222,7 +218,7 @@ export default function PartyPage() {
                             {state.error && (
                                 <motion.p
                                     initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                                    className="text-red-400 text-sm text-center bg-red-950/50 border border-red-900/50 rounded-xl py-2.5 px-4"
+                                    className="text-red-600 text-sm text-center bg-red-50 border border-red-100 rounded-xl py-2.5 px-4 font-medium"
                                 >
                                     ⚠️ {state.error}
                                 </motion.p>
@@ -236,19 +232,30 @@ export default function PartyPage() {
 
     // ── Sudah join → tampilkan lobby atau match ────────────────────────
     const isMatched = state.status === 'matched';
+    const isDrawing = Boolean(state.gameState && ['playing', 'gameover', 'showcase'].includes(state.gameState.status));
 
     return (
-        <main className="min-h-screen bg-[#030712] flex flex-col lg:flex-row p-4 gap-6 relative overflow-hidden">
-            {/* Background glow */}
-            <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-purple-900/20 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute bottom-[-20%] left-[-10%] w-[500px] h-[500px] bg-teal-900/10 rounded-full blur-3xl pointer-events-none" />
-
+        <main className="min-h-screen bg-gray-50 flex flex-col lg:flex-row p-4 gap-6 relative overflow-hidden">
+            
             {/* Video Area */}
-            <div className={`transition-all duration-700 ease-in-out ${isMatched ? 'absolute inset-4 z-20' : 'flex-1 relative'} bg-gray-900/40 border border-gray-800/50 rounded-[2.5rem] overflow-hidden shadow-2xl flex flex-col items-center justify-center backdrop-blur-sm min-h-[50vh] lg:min-h-0`}>
-                {lobbyToken && lobbyUrl ? (
-                    <div className="absolute inset-0 flex flex-col md:flex-row">
-                        {/* Area Kamera Kita (Kiri) / Fullscreen saat Matched */}
-                        <div className={`relative transition-all duration-700 ease-in-out ${isMatched ? 'w-full h-full' : 'w-full h-1/2 md:h-full md:w-1/2 border-b md:border-b-0 md:border-r border-gray-800/50'}`}>
+            <div className={`transition-all duration-700 ease-in-out ${isMatched ? 'absolute inset-4 z-20' : 'flex-1 relative'} bg-white border border-gray-200 rounded-[2.5rem] overflow-hidden shadow-xl flex flex-col items-center justify-center min-h-[50vh] lg:min-h-0`}>
+                <div className={`absolute inset-0 flex ${isDrawing ? 'flex-col lg:flex-row' : 'flex-col md:flex-row'} w-full h-full`}>
+                    
+                    {/* Skribbl Board Area */}
+                    {isDrawing && (
+                        <div className="flex-[3] relative border-b lg:border-b-0 lg:border-r border-gray-200">
+                            <SkribblBoard
+                                state={state}
+                                drawLine={drawLine}
+                                clearCanvas={clearCanvas}
+                                guessWord={guessWord}
+                                closeBoard={closeGame}
+                            />
+                        </div>
+                    )}
+
+                    {lobbyToken && lobbyUrl ? (
+                        <div className={`relative transition-all duration-700 ease-in-out ${isDrawing ? 'flex-1' : (isMatched ? 'w-full h-full' : 'w-full h-1/2 md:h-full md:w-1/2 border-b md:border-b-0 md:border-r border-gray-200')}`}>
                             <LiveKitRoom
                                 key={lobbyToken}
                                 token={lobbyToken}
@@ -259,14 +266,14 @@ export default function PartyPage() {
                                 data-lk-theme="default"
                                 className="w-full h-full"
                             >
-                                <MyVideoGrid partyCode={code} />
+                                <MyVideoGrid partyCode={code} isDrawing={isDrawing} />
                                 <RoomAudioRenderer />
                                 
                                 {/* Mute Controls saat BELUM matched (Tampil kecil di atas kamera sendiri) */}
                                 {!isMatched && (
                                     <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-50">
-                                        <TrackToggle source={Track.Source.Microphone} className="!bg-gray-900/80 hover:!bg-gray-800 !rounded-full !w-10 !h-10 !p-0 flex items-center justify-center border border-gray-700/50 shadow-lg text-white backdrop-blur-sm transition-all" />
-                                        <TrackToggle source={Track.Source.Camera} className="!bg-gray-900/80 hover:!bg-gray-800 !rounded-full !w-10 !h-10 !p-0 flex items-center justify-center border border-gray-700/50 shadow-lg text-white backdrop-blur-sm transition-all" />
+                                        <TrackToggle source={Track.Source.Microphone} className="!bg-white hover:!bg-gray-50 !rounded-full !w-10 !h-10 !p-0 flex items-center justify-center border border-gray-200 shadow-md text-gray-700 transition-all" />
+                                        <TrackToggle source={Track.Source.Camera} className="!bg-white hover:!bg-gray-50 !rounded-full !w-10 !h-10 !p-0 flex items-center justify-center border border-gray-200 shadow-md text-gray-700 transition-all" />
                                     </div>
                                 )}
 
@@ -274,12 +281,12 @@ export default function PartyPage() {
                                 {isMatched && (!state.gameState || ['inviting', 'rejected'].includes(state.gameState.status)) && (
                                     <motion.div
                                         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-                                        className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col sm:flex-row items-center justify-center gap-3 z-50 w-[90%] sm:w-max bg-gray-900/60 p-2 sm:p-3 rounded-[2rem] sm:rounded-full backdrop-blur-md border border-gray-700/50"
+                                        className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col sm:flex-row items-center justify-center gap-3 z-50 w-[90%] sm:w-max bg-white/90 p-2 sm:p-3 rounded-[2rem] sm:rounded-full backdrop-blur-md border border-gray-200 shadow-lg"
                                     >
                                         {/* Mute Mic / Video Controls bawaan LiveKit yang sudah di-style kustom */}
                                         <div className="flex gap-2 w-full sm:w-auto justify-center">
-                                            <TrackToggle source={Track.Source.Microphone} className="!bg-gray-800 hover:!bg-gray-700 !rounded-full !w-12 !h-12 !p-0 flex items-center justify-center border border-gray-600/50 shadow-lg text-white transition-all" />
-                                            <TrackToggle source={Track.Source.Camera} className="!bg-gray-800 hover:!bg-gray-700 !rounded-full !w-12 !h-12 !p-0 flex items-center justify-center border border-gray-600/50 shadow-lg text-white transition-all" />
+                                            <TrackToggle source={Track.Source.Microphone} className="!bg-white hover:!bg-gray-50 !rounded-full !w-12 !h-12 !p-0 flex items-center justify-center border border-gray-200 shadow-sm text-gray-700 transition-all" />
+                                            <TrackToggle source={Track.Source.Camera} className="!bg-white hover:!bg-gray-50 !rounded-full !w-12 !h-12 !p-0 flex items-center justify-center border border-gray-200 shadow-sm text-gray-700 transition-all" />
                                         </div>
                                         
                                         {isHost && (
@@ -289,7 +296,7 @@ export default function PartyPage() {
                                                     if (state.gameState?.status !== 'inviting') proposeGame(); 
                                                 }}
                                                 disabled={state.gameState?.status === 'inviting'}
-                                                className={`w-full sm:w-auto ${state.gameState?.status === 'inviting' ? 'bg-gray-600' : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500'} text-white font-bold py-3 px-6 rounded-full shadow-xl shadow-purple-900/30 flex items-center justify-center gap-2 transition-transform active:scale-95 border border-purple-400/50`}
+                                                className={`w-full sm:w-auto ${state.gameState?.status === 'inviting' ? 'bg-gray-400' : 'bg-indigo-600 hover:bg-indigo-700'} text-white font-bold py-3 px-6 rounded-full shadow-md flex items-center justify-center gap-2 transition-transform active:scale-95`}
                                             >
                                                 <Gamepad2 size={20} className={state.gameState?.status === 'inviting' ? 'animate-pulse' : ''} />
                                                 {state.gameState?.status === 'inviting' ? 'Menunggu Jawaban...' : 'Tebak Gambar'}
@@ -298,19 +305,19 @@ export default function PartyPage() {
                                         {isHost ? (
                                             <button
                                                 onClick={() => { playSkip(); skipParty(); }}
-                                                className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 text-white font-bold py-3 px-6 rounded-full shadow-xl shadow-red-900/30 flex items-center justify-center gap-2 transition-transform active:scale-95 border border-red-400/50"
+                                                className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-full shadow-md flex items-center justify-center gap-2 transition-transform active:scale-95"
                                             >
                                                 <Search size={20} />
                                                 Cari Lain!
                                             </button>
                                         ) : (
-                                            <div className="bg-gray-800/80 text-gray-400 text-sm py-3 px-6 rounded-full border border-gray-600/50">
+                                            <div className="bg-gray-100 text-gray-500 text-sm py-3 px-6 rounded-full border border-gray-200 font-medium">
                                                 Menunggu leader...
                                             </div>
                                         )}
                                         <button
                                             onClick={() => router.push('/')}
-                                            className="w-full sm:w-auto bg-red-900/80 hover:bg-red-800 text-white py-3 px-6 rounded-full border border-red-700/50 flex items-center justify-center gap-2 transition-transform active:scale-95 shadow-xl shadow-black/50"
+                                            className="w-full sm:w-auto bg-red-50 hover:bg-red-100 text-red-600 font-bold py-3 px-6 rounded-full border border-red-200 flex items-center justify-center gap-2 transition-transform active:scale-95 shadow-sm"
                                             title="Keluar Party"
                                         >
                                             <LogOut size={20} />
@@ -323,22 +330,22 @@ export default function PartyPage() {
                                 {state.gameState?.status === 'invited' && (
                                     <motion.div
                                         initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                                        className="absolute inset-0 flex items-center justify-center z-50 bg-black/60 backdrop-blur-sm p-4"
+                                        className="absolute inset-0 flex items-center justify-center z-50 bg-gray-900/60 backdrop-blur-sm p-4"
                                     >
-                                        <div className="bg-gray-900 border border-purple-500/50 p-6 md:p-8 rounded-[2rem] shadow-2xl flex flex-col items-center max-w-md text-center">
-                                            <div className="w-20 h-20 bg-purple-900/40 rounded-full flex items-center justify-center mb-4">
-                                                <Gamepad2 className="text-purple-400 animate-bounce" size={40} />
+                                        <div className="bg-white border border-gray-200 p-6 md:p-8 rounded-[2rem] shadow-2xl flex flex-col items-center max-w-md text-center">
+                                            <div className="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mb-4">
+                                                <Gamepad2 className="text-indigo-500 animate-bounce" size={40} />
                                             </div>
-                                            <h2 className="text-2xl font-bold text-white mb-2">Tantangan Bermain!</h2>
-                                            <p className="text-gray-400 mb-8">Pihak lawan menantang geng Anda untuk bermain <b>Tebak Gambar</b>. Apakah Anda siap menerimanya?</p>
+                                            <h2 className="text-2xl font-bold text-gray-900 mb-2">Tantangan Bermain!</h2>
+                                            <p className="text-gray-500 mb-8">Pihak lawan menantang geng Anda untuk bermain <b>Tebak Gambar</b>. Apakah Anda siap menerimanya?</p>
                                             
                                             {isHost ? (
                                                 <div className="flex gap-3 w-full">
-                                                    <button onClick={() => { playClick(); rejectGame(); }} className="flex-1 py-3.5 px-4 rounded-xl bg-gray-800 hover:bg-gray-700 text-white font-medium transition-all active:scale-95">Tolak</button>
-                                                    <button onClick={() => { playClick(); acceptGame(); }} className="flex-1 py-3.5 px-4 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold transition-all shadow-lg shadow-purple-900/50 active:scale-95">Terima Tantangan</button>
+                                                    <button onClick={() => { playClick(); rejectGame(); }} className="flex-1 py-3.5 px-4 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold transition-all active:scale-95 border border-gray-300">Tolak</button>
+                                                    <button onClick={() => { playClick(); acceptGame(); }} className="flex-1 py-3.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition-all shadow-md active:scale-95">Terima Tantangan</button>
                                                 </div>
                                             ) : (
-                                                <div className="bg-yellow-900/30 text-yellow-500 text-sm italic py-3 px-6 rounded-full border border-yellow-700/50">
+                                                <div className="bg-orange-50 text-orange-600 font-medium text-sm py-3 px-6 rounded-full border border-orange-200">
                                                     Menunggu keputusan ketua party Anda...
                                                 </div>
                                             )}
@@ -351,84 +358,73 @@ export default function PartyPage() {
                                     {state.gameState?.status === 'rejected' && (
                                         <motion.div
                                             initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-                                            className="absolute top-6 left-1/2 -translate-x-1/2 z-50 bg-red-900/90 border border-red-500 text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 backdrop-blur-md"
+                                            className="absolute top-6 left-1/2 -translate-x-1/2 z-50 bg-red-50 border border-red-200 text-red-600 font-bold px-6 py-3 rounded-full shadow-lg flex items-center gap-3"
                                         >
                                             <X size={20} />
-                                            <span className="font-medium">Pihak lawan menolak ajakan bermain.</span>
+                                            <span>Pihak lawan menolak ajakan bermain.</span>
                                         </motion.div>
                                     )}
                                 </AnimatePresence>
 
                             </LiveKitRoom>
                         </div>
-
-                        {/* Area Mencari Lawan (Kanan) - Hanya tampil saat belum matched */}
-                        {!isMatched && (
-                            <div className="w-full h-1/2 md:h-full md:w-1/2 bg-gray-900/80 flex flex-col items-center justify-center relative overflow-hidden backdrop-blur-md">
-                                <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 to-indigo-900/10 pointer-events-none" />
-                                
-                                {state.status === 'searching' ? (
-                                    <>
-                                        <div className="w-20 h-20 rounded-full bg-gray-800/80 flex items-center justify-center mb-6 border border-gray-700/50 shadow-2xl relative z-10">
-                                            <Radar className="animate-spin text-indigo-400" size={40} style={{ animationDuration: '2s' }} />
-                                            <div className="absolute inset-0 border-4 border-indigo-500/30 rounded-full animate-ping" style={{ animationDuration: '2s' }} />
-                                        </div>
-                                        <h3 className="text-xl font-bold text-gray-200 mb-2 relative z-10">Mencari Lawan Bicara...</h3>
-                                        <p className="text-gray-500 text-sm relative z-10 text-center px-6">Tunggu sebentar ya, kami sedang mencarikan teman yang pas buat kamu.</p>
-                                        
-                                        {isHost && (
-                                            <button 
-                                                onClick={cancelMatch}
-                                                className="mt-8 relative z-10 px-6 py-2.5 rounded-full bg-red-900/40 hover:bg-red-800/60 text-red-300 border border-red-800/50 transition-all font-medium flex items-center gap-2 active:scale-95"
-                                            >
-                                                <X size={16} /> Batal Mencari
-                                            </button>
-                                        )}
-                                    </>
-                                ) : (
-                                    <>
-                                        <div className="w-20 h-20 rounded-full bg-gray-800/80 flex items-center justify-center mb-6 border border-gray-700/50 shadow-2xl relative z-10">
-                                            <Users className="text-gray-400" size={40} />
-                                        </div>
-                                        <h3 className="text-xl font-bold text-gray-200 mb-2 relative z-10">Ruang Tunggu</h3>
-                                        <p className="text-gray-500 text-sm relative z-10 text-center px-6">Kamera Anda sudah siap. Klik tombol di bawah untuk mulai mencari lawan.</p>
-                                        
-                                        {isHost ? (
-                                            <button 
-                                                onClick={() => { playSearching(); findMatch(); }}
-                                                className="mt-8 relative z-10 px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-all flex items-center gap-2 shadow-lg shadow-indigo-900/20 active:scale-95"
-                                            >
-                                                <Search size={18} /> Mulai Mencari
-                                            </button>
-                                        ) : (
-                                            <div className="mt-8 bg-gray-800/80 text-gray-400 text-sm py-3 px-6 rounded-full border border-gray-600/50">
-                                                Menunggu Leader Memulai...
-                                            </div>
-                                        )}
-                                    </>
-                                )}
+                    ) : (
+                        <div className={`flex flex-col items-center justify-center space-y-4 text-gray-500 ${isDrawing ? 'flex-1' : 'absolute inset-0'}`}>
+                            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-2 shadow-sm">
+                                <Radar className="animate-spin text-indigo-400" size={32} style={{ animationDuration: '3s' }} />
                             </div>
-                        )}
-                    </div>
-                ) : (
-                    <div className="flex flex-col items-center justify-center space-y-4 text-gray-500">
-                        <div className="w-16 h-16 rounded-full bg-gray-800/50 flex items-center justify-center mb-2">
-                            <Radar className="animate-spin text-purple-500/50" size={32} style={{ animationDuration: '3s' }} />
+                            <p className="font-medium animate-pulse text-sm">Menyiapkan Kamera...</p>
                         </div>
-                        <p className="font-medium animate-pulse text-sm">Menyiapkan Kamera...</p>
-                    </div>
-                )}
+                    )}
 
-                {/* Skribbl Board Overlay */}
-                {state.gameState && ['playing', 'gameover', 'showcase'].includes(state.gameState.status) && (
-                    <SkribblBoard
-                        state={state}
-                        drawLine={drawLine}
-                        clearCanvas={clearCanvas}
-                        guessWord={guessWord}
-                        closeBoard={closeGame}
-                    />
-                )}
+                    {/* Area Mencari Lawan (Kanan) - Hanya tampil saat belum matched */}
+                    {!isMatched && !isDrawing && lobbyToken && lobbyUrl && (
+                        <div className="w-full h-1/2 md:h-full md:w-1/2 bg-gray-50 flex flex-col items-center justify-center relative overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-white pointer-events-none" />
+                            
+                            {state.status === 'searching' ? (
+                                <>
+                                    <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center mb-6 border border-gray-200 shadow-xl relative z-10">
+                                        <Radar className="animate-spin text-indigo-500" size={40} style={{ animationDuration: '2s' }} />
+                                        <div className="absolute inset-0 border-4 border-indigo-200 rounded-full animate-ping" style={{ animationDuration: '2s' }} />
+                                    </div>
+                                    <h3 className="text-xl font-bold text-gray-900 mb-2 relative z-10">Mencari Lawan Bicara...</h3>
+                                    <p className="text-gray-500 text-sm relative z-10 text-center px-6">Tunggu sebentar ya, kami sedang mencarikan teman yang pas buat kamu.</p>
+                                    
+                                    {isHost && (
+                                        <button 
+                                            onClick={cancelMatch}
+                                            className="mt-8 relative z-10 px-6 py-2.5 rounded-full bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 transition-all font-medium flex items-center gap-2 active:scale-95 shadow-sm"
+                                        >
+                                            <X size={16} /> Batal Mencari
+                                        </button>
+                                    )}
+                                </>
+                            ) : (
+                                <>
+                                    <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center mb-6 border border-gray-200 shadow-md relative z-10">
+                                        <Users className="text-indigo-400" size={40} />
+                                    </div>
+                                    <h3 className="text-xl font-bold text-gray-900 mb-2 relative z-10">Ruang Tunggu</h3>
+                                    <p className="text-gray-500 text-sm relative z-10 text-center px-6">Kamera Anda sudah siap. Klik tombol di bawah untuk mulai mencari lawan.</p>
+                                    
+                                    {isHost ? (
+                                        <button 
+                                            onClick={() => { playSearching(); findMatch(); }}
+                                            className="mt-8 relative z-10 px-8 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition-all flex items-center gap-2 shadow-lg shadow-indigo-600/20 active:scale-95"
+                                        >
+                                            <Search size={18} /> Mulai Mencari
+                                        </button>
+                                    ) : (
+                                        <div className="mt-8 bg-white text-gray-500 font-medium text-sm py-3 px-6 rounded-full border border-gray-200 shadow-sm">
+                                            Menunggu Leader Memulai...
+                                        </div>
+                                    )}
+                                </>
+                            )}
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* Sidebar Control (Kanan pada desktop, Bawah pada mobile) */}
@@ -446,38 +442,38 @@ export default function PartyPage() {
                                 initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}
                                 className="text-center lg:text-left"
                             >
-                                <h1 className="text-4xl font-extrabold text-white tracking-tight">
-                                    Party <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-teal-400">Lobby</span>
+                                <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">
+                                    Party <span className="text-indigo-600">Lobby</span>
                                 </h1>
-                                <p className="text-gray-400 text-sm mt-1.5">Ruang tunggu sebelum mencari lawan.</p>
+                                <p className="text-gray-500 text-sm mt-1.5">Ruang tunggu sebelum mencari lawan.</p>
                             </motion.div>
 
                             {/* Party Card */}
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-                                className="bg-gray-900/80 backdrop-blur-md rounded-3xl p-6 space-y-6 border border-gray-800 shadow-2xl relative overflow-hidden"
+                                className="bg-white rounded-3xl p-6 space-y-6 border border-gray-100 shadow-xl shadow-gray-200/50 relative overflow-hidden"
                             >
                                 {/* Searching Overlay */}
                                 <AnimatePresence>
                                     {state.status === 'searching' && (
                                         <motion.div
                                             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                                            className="absolute inset-0 z-20 bg-gray-950/80 backdrop-blur-sm flex flex-col items-center justify-center border border-purple-500/30 rounded-3xl"
+                                            className="absolute inset-0 z-20 bg-white/95 backdrop-blur-sm flex flex-col items-center justify-center border border-indigo-100 rounded-3xl"
                                         >
                                             <div className="relative flex items-center justify-center mb-6">
-                                                <div className="absolute w-24 h-24 border-2 border-purple-500/40 rounded-full animate-ping" />
-                                                <div className="absolute w-16 h-16 border-2 border-teal-500/40 rounded-full animate-ping" style={{ animationDelay: '0.2s' }} />
-                                                <div className="w-12 h-12 bg-gradient-to-tr from-purple-600 to-teal-600 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(168,85,247,0.5)]">
+                                                <div className="absolute w-24 h-24 border-2 border-indigo-200 rounded-full animate-ping" />
+                                                <div className="absolute w-16 h-16 border-2 border-indigo-300 rounded-full animate-ping" style={{ animationDelay: '0.2s' }} />
+                                                <div className="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg shadow-indigo-600/30">
                                                     <Radar className="text-white animate-spin" size={24} style={{ animationDuration: '3s' }} />
                                                 </div>
                                             </div>
-                                            <h3 className="text-xl font-bold text-white mb-1">Mencari Match</h3>
-                                            <p className="text-purple-300/80 text-sm mb-8 animate-pulse">Mencocokkan party kamu dengan party lain...</p>
+                                            <h3 className="text-xl font-bold text-gray-900 mb-1">Mencari Match</h3>
+                                            <p className="text-indigo-600 text-sm mb-8 animate-pulse font-medium">Mencocokkan party kamu dengan party lain...</p>
 
                                             {isHost && (
                                                 <button
                                                     onClick={() => { playClick(); cancelMatch(); }}
-                                                    className="flex items-center gap-2 bg-gray-800/80 hover:bg-gray-700/80 text-gray-300 font-medium py-2.5 px-6 rounded-full transition border border-gray-700"
+                                                    className="flex items-center gap-2 bg-gray-50 hover:bg-gray-100 text-gray-600 font-bold py-2.5 px-6 rounded-full transition border border-gray-200 shadow-sm"
                                                 >
                                                     <X size={16} /> Batalkan
                                                 </button>
@@ -487,14 +483,14 @@ export default function PartyPage() {
                                 </AnimatePresence>
 
                                 {/* Kode Party & Invite */}
-                                <div className="bg-gray-950/50 rounded-2xl p-4 border border-gray-800/50 flex items-center justify-between">
+                                <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200 flex items-center justify-between shadow-inner">
                                     <div>
-                                        <p className="text-gray-500 text-[10px] uppercase tracking-widest font-semibold mb-0.5">Kode Party</p>
-                                        <p className="text-2xl font-bold font-mono text-white tracking-[0.2em]">{code}</p>
+                                        <p className="text-gray-500 text-[10px] uppercase tracking-widest font-bold mb-0.5">Kode Party</p>
+                                        <p className="text-2xl font-bold font-mono text-gray-900 tracking-[0.2em]">{code}</p>
                                     </div>
                                     <button
                                         onClick={handleCopyLink}
-                                        className={`flex items-center gap-2 text-sm px-4 py-2.5 rounded-xl transition font-medium ${copied ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700'}`}
+                                        className={`flex items-center gap-2 text-sm px-4 py-2.5 rounded-xl transition font-bold ${copied ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 shadow-sm'}`}
                                     >
                                         {copied ? <Check size={16} /> : <Copy size={16} />}
                                         {copied ? 'Tersalin' : 'Invite'}
@@ -504,10 +500,10 @@ export default function PartyPage() {
                                 {/* Member List */}
                                 <div>
                                     <div className="flex items-center justify-between mb-3">
-                                        <p className="text-gray-500 text-xs uppercase tracking-widest font-semibold">
+                                        <p className="text-gray-500 text-xs uppercase tracking-widest font-bold">
                                             Member
                                         </p>
-                                        <span className="bg-gray-800 text-gray-400 text-xs px-2 py-0.5 rounded-full font-medium">
+                                        <span className="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full font-bold border border-gray-200">
                                             {state.members.length}/4
                                         </span>
                                     </div>
@@ -520,21 +516,21 @@ export default function PartyPage() {
                                                     variants={memberVariants}
                                                     initial="hidden" animate="visible" exit="exit"
                                                     layout
-                                                    className="flex items-center gap-3 bg-gray-800/50 rounded-2xl px-4 py-3 border border-gray-700/30"
+                                                    className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3 border border-gray-200 shadow-sm"
                                                 >
-                                                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white font-bold shadow-inner">
+                                                    <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold border border-indigo-200">
                                                         {member.name.charAt(0).toUpperCase()}
                                                     </div>
                                                     <div className="flex flex-col">
-                                                        <span className="text-gray-100 font-medium leading-none mb-1">{member.name}</span>
+                                                        <span className="text-gray-900 font-bold leading-none mb-1">{member.name}</span>
                                                         {member.clientId === state.hostId && (
-                                                            <span className="flex items-center gap-1 text-[10px] text-amber-400 font-medium tracking-wide uppercase">
+                                                            <span className="flex items-center gap-1 text-[10px] text-amber-600 font-bold tracking-wide uppercase">
                                                                 <Crown size={10} /> Party Leader
                                                             </span>
                                                         )}
                                                     </div>
                                                     {member.clientId === state.clientId && (
-                                                        <span className="ml-auto text-[10px] bg-gray-700 text-gray-300 px-2.5 py-1 rounded-full font-medium uppercase tracking-wider">
+                                                        <span className="ml-auto text-[10px] bg-gray-100 border border-gray-200 text-gray-500 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">
                                                             Kamu
                                                         </span>
                                                     )}
@@ -547,12 +543,12 @@ export default function PartyPage() {
                                             <motion.div
                                                 key={`empty-${i}`}
                                                 layout
-                                                className="flex items-center gap-3 bg-gray-900/30 rounded-2xl px-4 py-3 border border-dashed border-gray-700/50 opacity-50"
+                                                className="flex items-center gap-3 bg-gray-50 rounded-2xl px-4 py-3 border border-dashed border-gray-300 opacity-70"
                                             >
-                                                <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-600">
+                                                <div className="w-10 h-10 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400">
                                                     <User size={18} />
                                                 </div>
-                                                <span className="text-gray-500 text-sm font-medium">Menunggu teman...</span>
+                                                <span className="text-gray-400 text-sm font-medium">Menunggu teman...</span>
                                             </motion.div>
                                         ))}
                                     </div>
@@ -563,19 +559,19 @@ export default function PartyPage() {
                                     {isHost ? (
                                         <button
                                             onClick={() => { playClick(); findMatch(); }}
-                                            className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-teal-600 hover:from-purple-500 hover:to-teal-500 active:scale-95 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-purple-900/30 text-lg"
+                                            className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-indigo-600/20 text-lg"
                                         >
                                             <Search size={20} />
                                             Cari Match!
                                         </button>
                                     ) : (
-                                        <div className="flex-1 bg-gray-950/50 border border-gray-800/50 rounded-2xl flex items-center justify-center py-4 text-gray-500 text-sm font-medium">
+                                        <div className="flex-1 bg-gray-50 border border-gray-200 rounded-2xl flex items-center justify-center py-4 text-gray-500 text-sm font-medium shadow-inner">
                                             Menunggu leader mencari match...
                                         </div>
                                     )}
                                     <button
                                         onClick={() => router.push('/')}
-                                        className="bg-red-500/10 hover:bg-red-500/20 text-red-400 active:scale-95 p-4 rounded-2xl transition-all border border-red-500/20"
+                                        className="bg-red-50 hover:bg-red-100 text-red-600 active:scale-95 p-4 rounded-2xl transition-all border border-red-200 shadow-sm"
                                         title="Keluar Party"
                                     >
                                         <LogOut size={24} />

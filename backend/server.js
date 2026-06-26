@@ -159,7 +159,7 @@ wss.on('connection', (ws) => {
             ws.partyCode = msg.code;
 
             // Beritahu semua member update
-            broadcastToParty(msg.code, { type: 'PARTY_UPDATED', members: party.members });
+            broadcastToParty(msg.code, { type: 'PARTY_UPDATED', members: party.members, hostId: party.hostId });
 
             // Beritahu joiner data party lengkap
             ws.send(JSON.stringify({

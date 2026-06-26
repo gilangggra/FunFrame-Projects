@@ -46,11 +46,7 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-[#030712] flex flex-col items-center justify-center p-4 relative overflow-hidden">
-
-      {/* Background glow */}
-      <div className="absolute top-[-20%] left-[50%] translate-x-[-50%] w-[600px] h-[600px] bg-purple-900/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-[-10%] left-[20%] w-[400px] h-[400px] bg-teal-900/10 rounded-full blur-3xl pointer-events-none" />
+    <main className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 relative overflow-hidden">
 
       <div className="w-full max-w-md relative z-10 space-y-8">
 
@@ -61,14 +57,14 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="inline-flex items-center gap-2 bg-purple-950/60 border border-purple-800/40 rounded-full px-4 py-1.5 text-purple-300 text-sm mb-2">
-            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+          <div className="inline-flex items-center gap-2 bg-white border border-gray-200 shadow-sm rounded-full px-4 py-1.5 text-gray-600 text-sm mb-2 font-medium">
+            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
             Online & Ready
           </div>
-          <h1 className="text-6xl font-extrabold text-white tracking-tight leading-none">
-            Fun<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-teal-400">Frame</span>
+          <h1 className="text-6xl font-extrabold text-gray-900 tracking-tight leading-none">
+            Fun<span className="text-indigo-600">Frame</span>
           </h1>
-          <p className="text-gray-400 text-lg">
+          <p className="text-gray-500 text-lg">
             Bikin party, match random, video call seru!
           </p>
         </motion.div>
@@ -83,9 +79,9 @@ export default function Home() {
           {FEATURES.map(({ icon: Icon, label }) => (
             <div
               key={label}
-              className="flex items-center gap-1.5 bg-gray-900/80 border border-gray-800 rounded-full px-3 py-1.5 text-gray-400 text-xs"
+              className="flex items-center gap-1.5 bg-white border border-gray-200 shadow-sm rounded-full px-3 py-1.5 text-gray-600 text-xs font-medium"
             >
-              <Icon size={12} className="text-purple-400" />
+              <Icon size={12} className="text-indigo-500" />
               {label}
             </div>
           ))}
@@ -93,7 +89,7 @@ export default function Home() {
 
         {/* Card */}
         <motion.div
-          className="bg-gray-900/80 backdrop-blur-sm rounded-3xl p-6 border border-gray-800 space-y-5 shadow-2xl"
+          className="bg-white rounded-3xl p-6 border border-gray-100 space-y-5 shadow-xl shadow-gray-200/50"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
@@ -101,7 +97,7 @@ export default function Home() {
 
           {/* Nama Input */}
           <div>
-            <label className="text-xs text-gray-500 uppercase tracking-widest mb-2 block">
+            <label className="text-xs text-gray-500 uppercase tracking-widest mb-2 block font-semibold">
               Nama kamu
             </label>
             <input
@@ -110,19 +106,19 @@ export default function Home() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && (mode === 'create' ? handleCreate() : handleJoin())}
-              className="w-full bg-gray-800/80 text-white rounded-2xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-purple-500/50 placeholder-gray-600 transition border border-gray-700/50 focus:border-purple-500/50"
+              className="w-full bg-gray-50 text-gray-900 rounded-2xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-indigo-500/50 placeholder-gray-400 transition border border-gray-200 focus:border-indigo-500/50 shadow-inner"
             />
           </div>
 
           {/* Mode Toggle */}
-          <div className="flex bg-gray-800/60 rounded-2xl p-1">
+          <div className="flex bg-gray-50 rounded-2xl p-1 border border-gray-100">
             {(['create', 'join'] as const).map((m) => (
               <button
                 key={m}
                 onClick={() => setMode(m)}
-                className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition-all ${mode === m
-                    ? 'bg-gray-700 text-white shadow'
-                    : 'text-gray-500 hover:text-gray-300'
+                className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${mode === m
+                    ? 'bg-white text-gray-900 shadow-sm border border-gray-200'
+                    : 'text-gray-500 hover:text-gray-700'
                   }`}
               >
                 {m === 'create' ? '🎉 Buat Party' : '🔗 Gabung Party'}
@@ -143,7 +139,7 @@ export default function Home() {
                 <button
                   onClick={handleCreate}
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 text-white font-bold py-4 rounded-2xl transition-all flex items-center justify-center gap-2 text-lg shadow-lg shadow-purple-900/30"
+                  className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 text-white font-bold py-4 rounded-2xl transition-all flex items-center justify-center gap-2 text-lg shadow-lg shadow-indigo-600/20"
                 >
                   {loading ? (
                     <Loader2 size={20} className="animate-spin" />
@@ -168,12 +164,12 @@ export default function Home() {
                   onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
                   onKeyDown={(e) => e.key === 'Enter' && handleJoin()}
                   maxLength={6}
-                  className="w-full bg-gray-800/80 text-white rounded-2xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-teal-500/50 placeholder-gray-600 font-mono tracking-[0.3em] text-center text-xl border border-gray-700/50 focus:border-teal-500/50 transition"
+                  className="w-full bg-gray-50 text-gray-900 rounded-2xl px-4 py-3.5 outline-none focus:ring-2 focus:ring-teal-500/50 placeholder-gray-400 font-mono tracking-[0.3em] text-center text-xl border border-gray-200 focus:border-teal-500/50 transition shadow-inner"
                 />
                 <button
                   onClick={handleJoin}
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-500 hover:to-teal-600 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 text-white font-bold py-4 rounded-2xl transition-all flex items-center justify-center gap-2 text-lg shadow-lg shadow-teal-900/30"
+                  className="w-full bg-teal-600 hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 text-white font-bold py-4 rounded-2xl transition-all flex items-center justify-center gap-2 text-lg shadow-lg shadow-teal-600/20"
                 >
                   {loading ? (
                     <Loader2 size={20} className="animate-spin" />
@@ -192,7 +188,7 @@ export default function Home() {
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="text-red-400 text-sm text-center bg-red-950/50 border border-red-900/50 rounded-xl py-2.5 px-4"
+                className="text-red-600 text-sm text-center bg-red-50 border border-red-100 rounded-xl py-2.5 px-4 font-medium"
               >
                 ⚠️ {state.error}
               </motion.p>
@@ -201,7 +197,7 @@ export default function Home() {
 
         </motion.div>
 
-        <p className="text-center text-gray-700 text-xs">
+        <p className="text-center text-gray-400 text-xs">
           © 2025 FunFrame · Dengan bergabung kamu setuju dengan syarat & ketentuan
         </p>
 

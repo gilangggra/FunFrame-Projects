@@ -244,22 +244,22 @@ export default function SkribblBoard({ state, drawLine, clearCanvas, guessWord, 
             {/* Area Kanvas */}
             <div className="flex-1 flex flex-col pointer-events-auto relative">
                 {/* Header Info */}
-                <div className="bg-gray-900/90 backdrop-blur-md rounded-t-3xl border border-gray-700/50 p-4 text-center">
+                <div className="bg-white rounded-t-3xl border border-gray-200 p-4 text-center shadow-sm z-10">
                     {gameState.status === 'playing' ? (
                         isDrawer ? (
-                            <p className="text-white font-medium text-lg">Kamu menggambar: <span className="font-bold text-teal-400 tracking-widest uppercase">{gameState.word}</span></p>
+                            <p className="text-gray-900 font-medium text-lg">Kamu menggambar: <span className="font-bold text-indigo-600 tracking-widest uppercase">{gameState.word}</span></p>
                         ) : (
-                            <p className="text-gray-300">Tebak Gambar <span className="text-purple-400 font-bold">{drawerName}</span>: <span className="font-mono text-2xl ml-2 tracking-widest text-white">{hiddenWord}</span></p>
+                            <p className="text-gray-600">Tebak Gambar <span className="text-indigo-600 font-bold">{drawerName}</span>: <span className="font-mono text-2xl ml-2 tracking-widest text-gray-900 font-bold">{hiddenWord}</span></p>
                         )
                     ) : (
-                        <p className="text-yellow-400 font-bold text-xl flex items-center justify-center gap-2">
+                        <p className="text-orange-500 font-bold text-xl flex items-center justify-center gap-2">
                             <Trophy size={24} /> Pemenangnya adalah {gameState.winner}!
                         </p>
                     )}
                 </div>
 
                 {/* Canvas */}
-                <div className="flex-1 bg-white/10 backdrop-blur-md relative overflow-hidden border-x border-b border-gray-700/50 rounded-b-3xl">
+                <div className="flex-1 bg-white relative overflow-hidden border-x border-b border-gray-200 rounded-b-3xl shadow-sm">
                     <canvas
                         ref={canvasRef}
                         className={`w-full h-full ${isDrawer && gameState.status === 'playing' ? 'cursor-crosshair' : 'cursor-default'}`}
@@ -274,19 +274,19 @@ export default function SkribblBoard({ state, drawLine, clearCanvas, guessWord, 
 
                     {/* Tools untuk Drawer */}
                     {isDrawer && gameState.status === 'playing' && (
-                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-gray-900/90 p-2 rounded-2xl flex gap-2 border border-gray-700 shadow-xl">
+                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white p-2 rounded-2xl flex gap-2 border border-gray-200 shadow-lg">
                             {['#000000', '#EF4444', '#3B82F6', '#10B981', '#F59E0B'].map(c => (
                                 <button
                                     key={c}
                                     onClick={() => setColor(c)}
-                                    className={`w-8 h-8 rounded-full ${color === c ? 'ring-2 ring-white scale-110' : ''} transition-all`}
+                                    className={`w-8 h-8 rounded-full ${color === c ? 'ring-2 ring-indigo-500 scale-110 shadow-md' : 'border border-gray-200'} transition-all`}
                                     style={{ backgroundColor: c }}
                                 />
                             ))}
-                            <div className="w-px bg-gray-700 mx-2" />
+                            <div className="w-px bg-gray-200 mx-2" />
                             <button
                                 onClick={clearCanvas}
-                                className="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center text-red-400 hover:bg-gray-700 transition-all"
+                                className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-red-500 hover:bg-gray-200 transition-all border border-gray-200"
                                 title="Hapus Semua"
                             >
                                 <Eraser size={16} />
@@ -300,26 +300,26 @@ export default function SkribblBoard({ state, drawLine, clearCanvas, guessWord, 
                             <motion.div 
                                 initial={{ opacity: 0, scale: 0.8, y: 50 }} 
                                 animate={{ opacity: 1, scale: 1, y: 0 }} 
-                                className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 z-50"
+                                className="absolute inset-0 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 z-50"
                             >
-                                <div className="bg-gray-900 border-2 border-purple-500/50 p-8 rounded-3xl shadow-2xl flex flex-col items-center max-w-lg text-center transform hover:scale-105 transition-transform duration-300">
-                                    <div className="w-24 h-24 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center mb-6 shadow-xl shadow-yellow-900/50">
+                                <div className="bg-white border border-gray-200 p-8 rounded-3xl shadow-2xl flex flex-col items-center max-w-lg text-center transform hover:scale-105 transition-transform duration-300">
+                                    <div className="w-24 h-24 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center mb-6 shadow-xl shadow-yellow-600/30">
                                         <Trophy className="text-white" size={48} />
                                     </div>
-                                    <h2 className="text-3xl font-bold text-white mb-2">🎉 {gameState.winner} Menang! 🎉</h2>
-                                    <p className="text-gray-300 text-lg mb-6">Tebakan benar untuk mahakarya <span className="font-bold text-teal-400">{drawerName}</span></p>
+                                    <h2 className="text-3xl font-bold text-gray-900 mb-2">🎉 {gameState.winner} Menang! 🎉</h2>
+                                    <p className="text-gray-600 text-lg mb-6">Tebakan benar untuk mahakarya <span className="font-bold text-indigo-600">{drawerName}</span></p>
                                     
-                                    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 w-full mb-8 relative overflow-hidden">
-                                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-teal-500/10" />
-                                        <p className="text-gray-400 text-sm mb-1 uppercase tracking-widest font-bold">Kata Rahasia</p>
-                                        <p className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-teal-400 uppercase tracking-widest">
+                                    <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 w-full mb-8 relative overflow-hidden shadow-inner">
+                                        <div className="absolute inset-0 bg-indigo-50/50" />
+                                        <p className="text-gray-500 text-sm mb-1 uppercase tracking-widest font-bold">Kata Rahasia</p>
+                                        <p className="text-4xl font-black text-indigo-600 uppercase tracking-widest relative z-10">
                                             {gameState.word}
                                         </p>
                                     </div>
 
                                     <button 
                                         onClick={closeBoard}
-                                        className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-4 px-10 rounded-full shadow-lg transition-transform active:scale-95 flex items-center gap-2"
+                                        className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-10 rounded-full shadow-lg transition-transform active:scale-95 flex items-center gap-2"
                                     >
                                         <X size={20} /> Tutup & Kembali
                                     </button>
@@ -331,44 +331,44 @@ export default function SkribblBoard({ state, drawLine, clearCanvas, guessWord, 
             </div>
 
             {/* Sidebar Chat / Guess */}
-            <div className="w-full md:w-80 flex flex-col pointer-events-auto bg-gray-900/80 backdrop-blur-md rounded-3xl border border-gray-700/50 overflow-hidden h-64 md:h-auto">
-                <div className="bg-gray-800/80 p-3 text-center border-b border-gray-700/50">
-                    <h3 className="text-gray-300 font-bold text-sm uppercase tracking-widest">Tebakan & Chat</h3>
+            <div className="w-full md:w-80 flex flex-col pointer-events-auto bg-white rounded-3xl border border-gray-200 shadow-md overflow-hidden h-64 md:h-auto">
+                <div className="bg-gray-50 p-3 text-center border-b border-gray-200">
+                    <h3 className="text-gray-600 font-bold text-sm uppercase tracking-widest">Tebakan & Chat</h3>
                 </div>
                 
-                <div className="flex-1 overflow-y-auto p-4 space-y-2 flex flex-col justify-end">
+                <div className="flex-1 overflow-y-auto p-4 space-y-2 flex flex-col justify-end bg-white">
                     {gameState.chat?.map((msg, i) => (
                         <div key={i} className="text-sm">
-                            <span className="font-bold text-purple-400">{msg.sender}:</span> <span className="text-gray-300">{msg.text}</span>
+                            <span className="font-bold text-indigo-600">{msg.sender}:</span> <span className="text-gray-800">{msg.text}</span>
                         </div>
                     ))}
                     {gameState.status === 'gameover' && (
-                        <div className="text-center p-3 bg-yellow-500/20 text-yellow-300 rounded-xl mt-4 animate-bounce">
+                        <div className="text-center p-3 bg-orange-50 border border-orange-100 text-orange-600 rounded-xl mt-4 animate-bounce font-medium">
                             🎉 {gameState.winner} menebak dengan benar! <br/> Katanya adalah: <b>{gameState.word}</b>
                         </div>
                     )}
                 </div>
 
                 {!isDrawer && gameState.status === 'playing' && (
-                    <form onSubmit={handleGuess} className="p-3 bg-gray-800/50 border-t border-gray-700/50 flex gap-2">
+                    <form onSubmit={handleGuess} className="p-3 bg-gray-50 border-t border-gray-200 flex gap-2">
                         <input 
                             type="text" 
                             value={guess}
                             onChange={e => setGuess(e.target.value)}
                             placeholder="Tebak kata..."
-                            className="flex-1 bg-gray-900 text-white rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-teal-500 border border-gray-700"
+                            className="flex-1 bg-white text-gray-900 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500 border border-gray-200 shadow-inner"
                         />
-                        <button type="submit" className="bg-teal-600 hover:bg-teal-500 text-white p-2 rounded-xl transition-colors">
+                        <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white p-2 rounded-xl transition-colors shadow-sm">
                             <Send size={18} />
                         </button>
                     </form>
                 )}
 
                 {gameState.status === 'gameover' && (
-                    <div className="p-3 bg-gray-800/50 border-t border-gray-700/50 flex justify-center">
+                    <div className="p-3 bg-gray-50 border-t border-gray-200 flex justify-center">
                         <button 
                             onClick={closeBoard}
-                            className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-6 rounded-xl flex items-center gap-2"
+                            className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-6 rounded-xl flex items-center gap-2 transition-colors"
                         >
                             <X size={16} /> Tutup
                         </button>
